@@ -1,15 +1,17 @@
 import { useState } from 'react';
 import { Calendar, CheckCircle, Shield, CreditCard, Loader2 } from 'lucide-react';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
+
+// RUTAS CORREGIDAS CON EXTENSIÓN PARA EVITAR ERRORES EN VERCEL
+import { Button } from '../components/ui/button.tsx';
+import { Input } from '../components/ui/input.tsx';
+import { Label } from '../components/ui/label.tsx';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../components/ui/select';
+} from '../components/ui/select.tsx';
 import { toast } from 'sonner';
 
 export default function Booking() {
@@ -29,31 +31,20 @@ export default function Booking() {
     setLoading(true);
 
     try {
-      // CONEXIÓN CON TU BACKEND EN RENDER
       const response = await fetch("https://hostal-milagro.onrender.com/reservar", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
         toast.success('¡Reserva enviada con éxito!');
-        setFormData({
-          checkIn: '',
-          checkOut: '',
-          roomType: '',
-          guests: '1',
-          name: '',
-          email: '',
-          phone: '',
-        });
+        setFormData({ checkIn: '', checkOut: '', roomType: '', guests: '1', name: '', email: '', phone: '' });
       } else {
-        throw new Error('Error en el servidor');
+        throw new Error();
       }
     } catch (error) {
-      toast.error('No se pudo conectar con Render. Verifica tu servidor.');
+      toast.error('Error de conexión con el servidor.');
     } finally {
       setLoading(false);
     }
@@ -61,34 +52,24 @@ export default function Booking() {
 
   return (
     <section id="reservas" className="py-20 bg-white">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 text-slate-900">
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
           <div className="lg:col-span-2">
-            <div className="mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">Reserva tu Estancia</h2>
-              <p className="text-gray-600">Completa tus datos para enviarlos a nuestro sistema en Salta.</p>
-            </div>
-
+            <h2 className="text-3xl font-bold mb-4 italic text-orange-600">Reserva tu Estancia</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="checkIn">Fecha de Entrada</Label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input id="checkIn" type="date" className="pl-10" required value={formData.checkIn} onChange={(e) => setFormData({ ...formData, checkIn: e.target.value })} />
-                  </div>
+                  <Label>Entrada</Label>
+                  <Input type="date" required value={formData.checkIn} onChange={(e) => setFormData({ ...formData, checkIn: e.target.value })} />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="checkOut">Fecha de Salida</Label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input id="checkOut" type="date" className="pl-10" required value={formData.checkOut} onChange={(e) => setFormData({ ...formData, checkOut: e.target.value })} />
-                  </div>
+                  <Label>Salida</Label>
+                  <Input type="date" required value={formData.checkOut} onChange={(e) => setFormData({ ...formData, checkOut: e.target.value })} />
                 </div>
                 <div className="space-y-2">
                   <Label>Habitación</Label>
-                  <Select onValueChange={(val) => setFormData({ ...formData, roomType: val })} value={formData.roomType}>
-                    <SelectTrigger><SelectValue placeholder="Selecciona" /></SelectTrigger>
+                  <Select onValueChange={(val) => setFormData({ ...formData, roomType: val })}>
+                    <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="twin">Twin - $18</SelectItem>
                       <SelectItem value="doble">Doble - $22</SelectItem>
@@ -97,41 +78,21 @@ export default function Booking() {
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label>Huéspedes</Label>
-                  <Select onValueChange={(val) => setFormData({ ...formData, guests: val })} value={formData.guests}>
-                    <SelectTrigger><SelectValue placeholder="Personas" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="1">1 persona</SelectItem>
-                      <SelectItem value="2">2 personas</SelectItem>
-                      <SelectItem value="3">3 personas</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <Label>Nombre</Label>
+                  <Input placeholder="Tu nombre completo" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
                 </div>
               </div>
-
-              <div className="space-y-4 pt-4">
-                <Label htmlFor="name">Nombre Completo</Label>
-                <Input id="name" placeholder="Tu nombre" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Input type="email" placeholder="Correo" required value={formData.email} onChange={(e) => setFormData({ ...formData, email: e.target.value })} />
-                  <Input type="tel" placeholder="WhatsApp" required value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
-                </div>
-              </div>
-
-              <Button type="submit" disabled={loading} className="w-full bg-orange-500 hover:bg-orange-600 text-white py-6">
-                {loading ? <Loader2 className="animate-spin" /> : 'Confirmar Reserva'}
+              <Button type="submit" disabled={loading} className="w-full bg-orange-500 hover:bg-orange-600 text-white py-6 text-lg">
+                {loading ? <Loader2 className="animate-spin" /> : 'Confirmar Reserva Ahora'}
               </Button>
             </form>
           </div>
-
-          <div className="space-y-6">
-            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
-              <h3 className="font-semibold mb-4">Resumen</h3>
-              <div className="space-y-4 text-sm">
-                <div className="flex items-center gap-3 text-green-600"><CheckCircle className="w-5 h-5" /> Cancelación gratuita</div>
-                <div className="flex items-center gap-3 text-green-600"><Shield className="w-5 h-5" /> Conexión segura con Render</div>
-                <div className="flex items-center gap-3 text-green-600"><CreditCard className="w-5 h-5" /> Sin cargos ocultos</div>
-              </div>
+          <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 h-fit">
+            <h3 className="font-bold mb-4 text-lg">Tu Seguridad</h3>
+            <div className="space-y-4 text-sm">
+              <div className="flex items-center gap-2 text-green-700 font-medium"><CheckCircle className="w-5 h-5"/> Confirmación inmediata</div>
+              <div className="flex items-center gap-2 text-green-700 font-medium"><Shield className="w-5 h-5"/> Datos encriptados con Render</div>
+              <div className="flex items-center gap-2 text-green-700 font-medium"><CreditCard className="w-5 h-5"/> Pago en el establecimiento</div>
             </div>
           </div>
         </div>
