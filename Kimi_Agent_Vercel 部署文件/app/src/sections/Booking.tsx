@@ -29,33 +29,21 @@ export default function Booking() {
     setLoading(true);
 
     try {
-      // CONEXIÓN CON TU BACKEND EN RENDER
+      // ESTA ES LA LÍNEA QUE CONECTA CON RENDER
       const response = await fetch("https://hostal-milagro.onrender.com/reservar", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       if (response.ok) {
-        toast.success('¡Reserva enviada a Render con éxito! Te contactaremos pronto.');
-        // Limpiar formulario
-        setFormData({
-          checkIn: '',
-          checkOut: '',
-          roomType: '',
-          guests: '1',
-          name: '',
-          email: '',
-          phone: '',
-        });
+        toast.success('✅ ¡Reserva enviada a Render con éxito!');
+        setFormData({ checkIn: '', checkOut: '', roomType: '', guests: '1', name: '', email: '', phone: '' });
       } else {
-        throw new Error('Error en el servidor');
+        throw new Error();
       }
     } catch (error) {
-      console.error("Error:", error);
-      toast.error('No se pudo conectar con el servidor. Revisa si Render está activo.');
+      toast.error('❌ Error: El servidor en Render no responde.');
     } finally {
       setLoading(false);
     }
@@ -65,68 +53,48 @@ export default function Booking() {
     <section id="reservas" className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Form Side */}
           <div className="lg:col-span-2">
-            <div className="mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Reserva tu Estancia
-              </h2>
-              <p className="text-gray-600">
-                Completa tus datos y nos pondremos en contacto para confirmar tu llegada al Hostal del Milagro.
-              </p>
-            </div>
-
+            <h2 className="text-3xl font-bold mb-4">Reserva tu Estancia</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <Label htmlFor="checkIn">Fecha de Entrada</Label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="checkIn"
-                      type="date"
-                      className="pl-10"
-                      required
-                      value={formData.checkIn}
-                      onChange={(e) => setFormData({ ...formData, checkIn: e.target.value })}
-                    />
-                  </div>
+                  <Label>Entrada</Label>
+                  <Input type="date" required value={formData.checkIn} onChange={(e) => setFormData({ ...formData, checkIn: e.target.value })} />
                 </div>
-
                 <div className="space-y-2">
-                  <Label htmlFor="checkOut">Fecha de Salida</Label>
-                  <div className="relative">
-                    <Calendar className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                    <Input
-                      id="checkOut"
-                      type="date"
-                      className="pl-10"
-                      required
-                      value={formData.checkOut}
-                      onChange={(e) => setFormData({ ...formData, checkOut: e.target.value })}
-                    />
-                  </div>
+                  <Label>Salida</Label>
+                  <Input type="date" required value={formData.checkOut} onChange={(e) => setFormData({ ...formData, checkOut: e.target.value })} />
                 </div>
-
                 <div className="space-y-2">
-                  <Label>Tipo de Habitación</Label>
-                  <Select 
-                    onValueChange={(val) => setFormData({ ...formData, roomType: val })}
-                    value={formData.roomType}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona habitación" />
-                    </SelectTrigger>
+                  <Label>Habitación</Label>
+                  <Select onValueChange={(v) => setFormData({ ...formData, roomType: v })}>
+                    <SelectTrigger><SelectValue placeholder="Tipo" /></SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="twin">Habitación Twin - $18/noche</SelectItem>
-                      <SelectItem value="doble">Habitación Doble - $22/noche</SelectItem>
-                      <SelectItem value="familiar">Habitación Familiar - $32/noche</SelectItem>
+                      <SelectItem value="twin">Twin - $18</SelectItem>
+                      <SelectItem value="doble">Doble - $22</SelectItem>
+                      <SelectItem value="familiar">Familiar - $32</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div className="space-y-2">
-                  <Label>Huéspedes</Label>
-                  <Select 
-                    onValueChange={(val) => setFormData({ ...formData, guests: val })}
-                    value={
+                  <Label>Nombre</Label>
+                  <Input placeholder="Tu nombre" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
+                </div>
+              </div>
+              <Button type="submit" disabled={loading} className="w-full bg-orange-500 text-white py-6">
+                {loading ? <Loader2 className="animate-spin" /> : 'Confirmar Reserva'}
+              </Button>
+            </form>
+          </div>
+          <div className="bg-gray-50 p-6 rounded-2xl h-fit">
+            <h3 className="font-semibold mb-4">Resumen</h3>
+            <div className="space-y-3 text-sm">
+              <div className="flex items-center gap-2 text-green-600"><CheckCircle className="w-4 h-4"/> Sin cargos ocultos</div>
+              <div className="flex items-center gap-2 text-green-600"><Shield className="w-4 h-4"/> Conexión segura con Render</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
