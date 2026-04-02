@@ -1,7 +1,5 @@
 import { useState } from 'react';
-import { Calendar, CheckCircle, Shield, CreditCard, Loader2 } from 'lucide-react';
-
-// RUTAS CORREGIDAS CON EXTENSIÓN PARA EVITAR ERRORES EN VERCEL
+import { CheckCircle, Shield, CreditCard, Loader2 } from 'lucide-react';
 import { Button } from '../components/ui/button.tsx';
 import { Input } from '../components/ui/input.tsx';
 import { Label } from '../components/ui/label.tsx';
@@ -91,7 +89,7 @@ export default function Booking() {
             <h3 className="font-bold mb-4 text-lg">Tu Seguridad</h3>
             <div className="space-y-4 text-sm">
               <div className="flex items-center gap-2 text-green-700 font-medium"><CheckCircle className="w-5 h-5"/> Confirmación inmediata</div>
-              <div className="flex items-center gap-2 text-green-700 font-medium"><Shield className="w-5 h-5"/> Datos encriptados con Render</div>
+              <div className="flex items-center gap-2 text-green-700 font-medium"><Shield className="w-5 h-5"/> Datos encriptados</div>
               <div className="flex items-center gap-2 text-green-700 font-medium"><CreditCard className="w-5 h-5"/> Pago en el establecimiento</div>
             </div>
           </div>
